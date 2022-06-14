@@ -50,7 +50,7 @@ const getAllCurrencys = async (pattern1 = 'USD', patter2 = 'BRL') => {
 currencyOne.addEventListener('input', async event => {
   const selectCurrencyOneValue = event.target.value.split(',')[0]
   url = `https://v6.exchangerate-api.com/v6/${APIKey}/latest/${selectCurrencyOneValue}`
-  await getAllCurrencys(selectCurrencyOneValue)
+  await getAllCurrencys(selectCurrencyOneValue, currencyTwo.value.split(',')[0])
   })
 
 currencyTwo.addEventListener('input', async event => {
