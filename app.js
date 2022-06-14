@@ -22,17 +22,10 @@ const fetchApi = async url => {
   }
 }
 
-let getCurrencyOne, 
- getCurrencyTwo, 
- selectedCurrencyOne,
- selectedCurrencyTwo
+let getCurrencyOne, getCurrencyTwo, selectedCurrencyOne, selectedCurrencyTwo
 
-const getAllCurrencys = async (pattern1 = 'USD', patter2 = 'BRL') => {
-  const {conversion_rates} = await fetchApi(url)
-  const allCurrencys = Object.entries(conversion_rates)
-  getCurrencyOne = allCurrencys.find(element => element.includes(pattern1))
-  getCurrencyTwo = allCurrencys.find(element => element.includes(patter2))
-  const currencys = allCurrencys.map((currency) => {   
+const generateCurrancyOptions = (arrOfCurrencys, pattern1 = 'USD', patter2 = 'BRL') => 
+  arrOfCurrencys.map((currency) => {   
     if (currency.includes(pattern1)) {
       selectedCurrencyOne = `<option selected value="${currency}">${currency[0]}</option>`
     } else if (currency.includes(patter2)) {
@@ -40,30 +33,53 @@ const getAllCurrencys = async (pattern1 = 'USD', patter2 = 'BRL') => {
     } 
     return `<option value="${currency}">${currency[0]}</option>`
   })
-  const populateSelect = currencys.forEach((optCurrency) => {
-      currencyOne.innerHTML += optCurrency.includes(pattern1) ? selectedCurrencyOne : optCurrency
-      currencyTwo.innerHTML += optCurrency.includes(patter2) ? selectedCurrencyTwo : optCurrency
+
+const populateSelect = (arrOfCurrencyOptions, pattern1, pattern2) => 
+  arrOfCurrencyOptions.forEach((optCurrency) => {
+    currencyOne.innerHTML += optCurrency.includes(pattern1) ? selectedCurrencyOne : optCurrency
+    currencyTwo.innerHTML += optCurrency.includes(pattern2) ? selectedCurrencyTwo : optCurrency
   })
+
+const showPrecisionValue = () => 
   presionValue.textContent = `${getCurrencyOne[1]} ${getCurrencyOne[0]} = ${getCurrencyTwo[1]} ${getCurrencyTwo[0]}`
+
+const getSelectedCurrencys = (arrOfCurrencys, pattern1, pattern2) => {
+  getCurrencyOne = arrOfCurrencys.find(element => element.includes(pattern1))
+  getCurrencyTwo = arrOfCurrencys.find(element => element.includes(pattern2))
 }
 
-currencyOne.addEventListener('input', async event => {
+const getAllCurrencys = async (pattern1 = 'USD', pattern2 = 'BRL') => {
+  const {conversion_rates} = await fetchApi(url)
+  const allCurrencys = Object.entries(conversion_rates)
+
+  getSelectedCurrencys(allCurrencys, pattern1, pattern2)
+  const currencys = generateCurrancyOptions(allCurrencys, pattern1, pattern2)
+  populateSelect(currencys, pattern1, pattern2)
+  showPrecisionValue()  
+}
+
+const changeSelectValueOne =  async event => {
   const selectCurrencyOneValue = event.target.value.split(',')[0]
   url = `https://v6.exchangerate-api.com/v6/${APIKey}/latest/${selectCurrencyOneValue}`
   await getAllCurrencys(selectCurrencyOneValue, currencyTwo.value.split(',')[0])
-  })
+}
 
-currencyTwo.addEventListener('input', async event => {
+const changeSelectValueTwo = async event => {
   const selectCurrencyTwoValue = event.target.value.split(',')[0]
   await getAllCurrencys(currencyOne.value.split(',')[0], selectCurrencyTwoValue)
-})
+}
 
-inputCurrency.addEventListener('input', event => {
+const calculateCurrecy =  event => {
   const inputValue = event.target.valueAsNumber
   const calculate = inputValue * getCurrencyTwo[1]
   if (!isNaN(calculate)) {
     convertedValue.textContent = calculate.toFixed(2)
   }  
-})
+}
+
+currencyOne.addEventListener('input',changeSelectValueOne)
+currencyTwo.addEventListener('input', changeSelectValueTwo)
+inputCurrency.addEventListener('input',calculateCurrecy)
 
 getAllCurrencys() 
+
