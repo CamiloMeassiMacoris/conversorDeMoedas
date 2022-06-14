@@ -1,5 +1,5 @@
 body {
-  background-color: #F9FAFC;
+  background-color: #63B8FF;
 }
 
 .container {
@@ -12,4 +12,7 @@ body {
 
 .conversion-precision {
   color: #452B4E;
+  border: 0.15rem solid rgb(56,80,97,0.5);
+  border-radius: 5px;
+
 }

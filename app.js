@@ -41,7 +41,7 @@ const populateSelect = (arrOfCurrencyOptions, pattern1, pattern2) =>
   })
 
 const showPrecisionValue = () => 
-  presionValue.textContent = `${getCurrencyOne[1]} ${getCurrencyOne[0]} = ${getCurrencyTwo[1]} ${getCurrencyTwo[0]}`
+  presionValue.textContent = `Valor Unitário: ${getCurrencyOne[1]} ${getCurrencyOne[0]} = ${getCurrencyTwo[1]} ${getCurrencyTwo[0]}`
 
 const getSelectedCurrencys = (arrOfCurrencys, pattern1, pattern2) => {
   getCurrencyOne = arrOfCurrencys.find(element => element.includes(pattern1))
